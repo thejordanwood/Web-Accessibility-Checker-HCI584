@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Information</title>
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Image Information</h1>
+    <table>
+        <tr>
+            <th>Web Address</th>
+            <th>Thumbnail</th>
+            <th>Alt Text</th>
+            <th>Pass/Fail Score</th>
+        </tr>
+        {% for data in image_info %}
+        <tr>
+            <td>{{ data['Web address'] }}</td>
+            <td>{{ data['Thumbnail'] }}</td>
+            <td>{{ data['Alt text content'] }}</td>
+            <td>{{ data['Pass/fail score'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
