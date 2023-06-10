@@ -1,32 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Image Information</title>
+    <title>Image Info</title>
     <style>
+        /* CSS styles for the table */
         table {
             border-collapse: collapse;
+            width: 100%;
         }
         th, td {
             border: 1px solid black;
             padding: 8px;
+            text-align: left;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
         }
     </style>
 </head>
 <body>
-    <h1>Image Information</h1>
     <table>
         <tr>
-            <th>Web Address</th>
+            <th>Web address</th>
             <th>Thumbnail</th>
-            <th>Alt Text</th>
-            <th>Pass/Fail Score</th>
+            <th>Presence of alt text</th>
+            <th>Alt text content</th>
+            <th>Pass/fail score</th>
         </tr>
-        {% for data in image_info %}
+        {% for image in image_info %}
         <tr>
-            <td>{{ data['Web address'] }}</td>
-            <td>{{ data['Thumbnail'] }}</td>
-            <td>{{ data['Alt text content'] }}</td>
-            <td>{{ data['Pass/fail score'] }}</td>
+            <td>{{ image['Web address'] }}</td>
+            <td><img src="{{ image['Thumbnail'] }}"></td>
+            <td>{{ image['Presence of alt text'] }}</td>
+            <td>{{ image['Alt text content'] }}</td>
+            <td>{{ image['Pass/fail score'] }}</td>
         </tr>
         {% endfor %}
     </table>
