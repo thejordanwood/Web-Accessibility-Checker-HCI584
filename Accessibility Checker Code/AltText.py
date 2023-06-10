@@ -57,8 +57,13 @@ def get_image_info(url):
 
 # Function to calculate pass/fail score based on specific criteria
 def calculate_score(alt_text):
-    # Put scoring logic here
-    return 0
+    # Check if alt text has more than 5 words
+    word_count = len(alt_text.split())
+    if word_count > 5:
+        # Check if alt text does not start with "Picture of" or "Image of"
+        if not alt_text.startswith("Picture of") and not alt_text.startswith("Image of"):
+            return "Pass"
+    return "Fail"
 
 # Pull in table decoration and an example website URL
 @app.route('/')
