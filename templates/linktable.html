@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Link Text Info</title>
+    <style>
+        /* CSS styles for the table */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        img {
+            max-width: 100px;
+            max-height: 100px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Link Text Information</h1>
+    <table>
+        <tr>
+            <th>Web Address</th>
+            <th>Link Text Content</th>
+            <th>Pass/Fail Score</th>
+        </tr>
+        {% for link_info in link_text_info %}
+        <tr>
+            <td>{{ link_info['Web address'] }}</td>
+            <td>{{ link_info['Link text content'] }}</td>
+            <td>{{ link_info['Pass/fail score'] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
+
+
