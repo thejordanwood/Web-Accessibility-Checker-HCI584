@@ -62,6 +62,31 @@ def calculate_score(alt_text):
             return "Pass"
     return "Fail"
 
+# Table view with image information and filtering capabilities
+@app.route('/table', methods=['POST'])
+def display_table():
+    website_url = request.form['website_url']
+    image_info = get_image_info(website_url)
+    filtered_image_info = image_info  # Show filtered image info with all image data
+
+    # Filter by presence of alt text
+    presence_filter = request.form.get('presence_filter')
+    if presence_filter:
+        if presence_filter == 'Yes':
+            filtered_image_info = [image for image in filtered_image_info if image['Presence of alt text'] == presence_filter]
+        elif presence_filter == 'No':
+            filtered_image_info = [image for image in filtered_image_info if image['Presence of alt text'] != 'Yes']
+
+    # Filter by pass/fail score
+    score_filter = request.form.get('score_filter')
+    if score_filter:
+        if score_filter == 'Pass':
+            filtered_image_info = [image for image in filtered_image_info if image['Pass/fail score'] == score_filter]
+        elif score_filter == 'Fail':
+            filtered_image_info = [image for image in filtered_image_info if image['Pass/fail score'] != 'Pass']
+
+    return render_template('table.html', image_info=filtered_image_info, website_url=website_url)
+
 #start screen where user can insert web url
 @app.route('/', methods=['GET', 'POST'])
 def start_screen():
@@ -74,4 +99,6 @@ def start_screen():
 
 if __name__ == '__main__':
     app.run()
+
+
 
