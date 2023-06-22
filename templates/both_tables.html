@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Combined Table</title>
+    <title>Accessibility Checker</title>
     <style>
         /* CSS styling */
         table {
@@ -70,7 +70,7 @@
             window.location.href = '/toggle?type=' + selectedTable + '&url=' + websiteUrl;
         }
 
-        // Function to toggle the filter arrow direction and update the form input
+        // Function to change the filter arrow direction and update the form input
         function toggleFilter(columnName) {
             var columnElement = document.getElementById(columnName);
             var currentSortOrder = columnElement.getAttribute('data-sort');
@@ -172,7 +172,7 @@
     <!-- Toggle dropdown and button -->
     <div class="toggle-container">
         <select id="table-select">
-            <option value="link">Link Text Information</option>
+            <option value="link">Link Text Table</option>
             <option value="alt">Image Info Table</option>
         </select>
         <button onclick="toggleTable()">Change table view</button>
@@ -180,11 +180,11 @@
     {% if table_type == 'link' %}
 
 <!-- Link table headers -->
-<h1>Link Text Information</h1>
+<h1>Link Text Table</h1>
 <table>
     <tr>
         <th>Web Address</th>
-        <th>Link Text Content</th>
+        <th>Link text content</th>
         <th>Pass/Fail Score</th>
     </tr>
     {% for link_info in link_info %}
