@@ -47,46 +47,56 @@
             height: auto;
         }
     </style>
-    <script>
-        // Function to toggle the filter arrow direction and update the form input
-        function toggleFilter(columnName) {
-            var columnElement = document.getElementById(columnName);
-            var currentSortOrder = columnElement.getAttribute('data-sort');
-            var newSortOrder = 'asc';
+<script>
+    // Function to toggle the filter arrow direction and update the form input
+    function toggleFilter(columnName) {
+        var columnElement = document.getElementById(columnName);
+        var currentSortOrder = columnElement.getAttribute('data-sort');
+        var newSortOrder = 'asc';
 
-            if (currentSortOrder === 'asc') {
-                newSortOrder = 'desc';
-                columnElement.classList.remove('asc');
-                columnElement.classList.add('desc');
-            } else {
-                columnElement.classList.remove('desc');
-                columnElement.classList.add('asc');
-            }
-
-            columnElement.setAttribute('data-sort', newSortOrder);
-            var formInput = document.getElementById('sort_by');
-            formInput.value = columnName + ' ' + newSortOrder;
-            document.getElementById('filter_form').submit();
+        if (currentSortOrder === 'asc') {
+            newSortOrder = 'desc';
+            columnElement.classList.remove('asc');
+            columnElement.classList.add('desc');
+        } else {
+            newSortOrder = 'asc';
+            columnElement.classList.remove('desc');
+            columnElement.classList.add('asc');
         }
 
-        // Function to group the Presence of alt text column
-        function groupByAltText() {
-            var altTextColumn = document.querySelectorAll('.alt-text-column');
-            var altTextGroup = {};
+        columnElement.setAttribute('data-sort', newSortOrder);
+        var formInput = document.getElementById('sort_by');
+        formInput.value = columnName + ' ' + newSortOrder;
+        document.getElementById('filter_form').submit();
+    }
 
-            altTextColumn.forEach(function(td) {
-                var altTextValue = td.textContent.trim();
-                if (!(altTextValue in altTextGroup)) {
-                    altTextGroup[altTextValue] = [];
-                }
-                altTextGroup[altTextValue].push(td.parentNode);
-            });
+    // Function to group the Presence of alt text column
+    function groupByAltText() {
+        var altTextColumn = document.querySelectorAll('.alt-text-column');
+        var altTextGroup = {};
 
-            var tbody = document.querySelector('tbody');
-            tbody.innerHTML = '';
+        altTextColumn.forEach(function(td) {
+            var altTextValue = td.textContent.trim();
+            if (!(altTextValue in altTextGroup)) {
+                altTextGroup[altTextValue] = [];
+            }
+            altTextGroup[altTextValue].push(td.parentNode);
+        });
 
-            Object.keys(altTextGroup).forEach(function(altTextValue) {
-                var altTextRows = altTextGroup[altTextValue];
+        var tbody = document.querySelector('tbody');
+        tbody.innerHTML = '';
+
+        var altTextValues = Object.keys(altTextGroup);
+        var groupedAltTextValues = [];
+
+        var sortDirection = document.getElementById('alt_text_header').getAttribute('data-sort');
+        var displayOrder = sortDirection === 'asc' ? ['Yes', 'No'] : ['No', 'Yes'];
+
+        displayOrder.forEach(function(altTextValue) {
+            if (altTextValues.includes(altTextValue)) {
+                var rows = altTextGroup[altTextValue];
+                groupedAltTextValues.push(altTextValue);
+
                 var groupRow = document.createElement('tr');
                 var groupCell = document.createElement('td');
                 groupCell.colSpan = 5;
@@ -94,28 +104,46 @@
                 groupRow.appendChild(groupCell);
                 tbody.appendChild(groupRow);
 
-                altTextRows.forEach(function(row) {
+                rows.forEach(function(row) {
                     tbody.appendChild(row);
                 });
-            });
-        }
+            }
+        });
 
-        // Add event listeners to the filter headers
-        document.addEventListener('DOMContentLoaded', function() {
-            var headers = document.querySelectorAll('.filter-active');
-            headers.forEach(function(header) {
-                header.addEventListener('click', function() {
-                    var columnName = this.id;
-                    toggleFilter(columnName);
+        altTextValues.forEach(function(altTextValue) {
+            if (!groupedAltTextValues.includes(altTextValue)) {
+                var rows = altTextGroup[altTextValue];
+
+                var groupRow = document.createElement('tr');
+                var groupCell = document.createElement('td');
+                groupCell.colSpan = 5;
+                groupCell.textContent = altTextValue;
+                groupRow.appendChild(groupCell);
+                tbody.appendChild(groupRow);
+
+                rows.forEach(function(row) {
+                    tbody.appendChild(row);
                 });
-            });
+            }
+        });
+    }
 
-            var altTextHeader = document.getElementById('alt_text_header');
-            altTextHeader.addEventListener('click', function() {
-                groupByAltText();
+    // Add event listeners to the filter headers
+    document.addEventListener('DOMContentLoaded', function() {
+        var headers = document.querySelectorAll('.filter-active');
+        headers.forEach(function(header) {
+            header.addEventListener('click', function() {
+                var columnName = this.id;
+                toggleFilter(columnName);
             });
         });
-    </script>
+
+        var altTextHeader = document.getElementById('alt_text_header');
+        altTextHeader.addEventListener('click', function() {
+            groupByAltText();
+        });
+    });
+</script>
 </head>
 <body>
     <h1>Image Info Table</h1>
@@ -126,7 +154,7 @@
                 <th>Thumbnail</th>
                 <th id="alt_text_header" data-sort="asc" class="filter-active">Presence of alt text<span class="filter-arrow asc"></span></th>
                 <th>Alt text content</th>
-                <th id="score_header" data-sort="asc" class="filter-active">Pass/fail score<span class="filter-arrow asc"></span></th>
+                <th>Pass/fail score</th>
             </tr>
         </thead>
         <tbody>
@@ -143,6 +171,7 @@
     </table>
 </body>
 </html>
+
 
 
 
