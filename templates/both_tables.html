@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Combined Table</title>
+    <style>
+        /* CSS styling */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .filter-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 5px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 5px 5px 0 5px;
+            border-color: #999999 transparent transparent transparent;
+        }
+        
+        .filter-arrow.asc {
+            border-color: #999999 transparent #ffffff transparent;
+        }
+        
+        .filter-arrow.desc {
+            border-color: #999999 transparent transparent transparent;
+        }
+        
+        .filter-active .filter-arrow {
+            visibility: visible;
+        }
+        
+        .filter-arrow::after {
+            content: "";
+            display: none;
+        }
+        
+        .thumbnail {
+            width: 100px;
+            height: auto;
+        }
+        
+        .toggle-container {
+            margin-bottom: 10px;
+        }
+    </style>
+    
+    <script>
+        // I'm learning JavaScript!
+
+        // Table toggler
+        function toggleTable() {
+            var selectedTable = document.getElementById("table-select").value;
+            var websiteUrl = "{{ website_url }}";
+            window.location.href = '/toggle?type=' + selectedTable + '&url=' + websiteUrl;
+        }
+
+        // Function to toggle the filter arrow direction and update the form input
+        function toggleFilter(columnName) {
+            var columnElement = document.getElementById(columnName);
+            var currentSortOrder = columnElement.getAttribute('data-sort');
+            var newSortOrder = 'asc';
+
+            if (currentSortOrder === 'asc') {
+                newSortOrder = 'desc';
+                columnElement.classList.remove('asc');
+                columnElement.classList.add('desc');
+            } else {
+                newSortOrder = 'asc';
+                columnElement.classList.remove('desc');
+                columnElement.classList.add('asc');
+            }
+
+            columnElement.setAttribute('data-sort', newSortOrder);
+            var formInput = document.getElementById('sort_by');
+            formInput.value = columnName + ' ' + newSortOrder;
+            document.getElementById('filter_form').submit();
+        }
+
+        // Function to group the Presence of alt text column
+        function groupByAltText() {
+            var altTextColumn = document.querySelectorAll('.alt-text-column');
+            var altTextGroup = {};
+
+            altTextColumn.forEach(function(td) {
+                var altTextValue = td.textContent.trim();
+                if (!(altTextValue in altTextGroup)) {
+                altTextGroup[altTextValue] = [];
+                }
+                altTextGroup[altTextValue].push(td.parentNode);
+            });
+
+            var tbody = document.querySelector('tbody');
+            tbody.innerHTML = '';
+
+            var altTextValues = Object.keys(altTextGroup);
+            var groupedAltTextValues = [];
+
+            var sortDirection = document.getElementById('alt_text_header').getAttribute('data-sort');
+            var displayOrder = sortDirection === 'asc' ? ['Yes', 'No'] : ['No', 'Yes'];
+
+            displayOrder.forEach(function(altTextValue) {
+                if (altTextValues.includes(altTextValue)) {
+                    var rows = altTextGroup[altTextValue];
+                    groupedAltTextValues.push(altTextValue);
+
+                    var groupRow = document.createElement('tr');
+                    var groupCell = document.createElement('td');
+                    groupCell.colSpan = 5;
+                    groupCell.textContent = altTextValue;
+                    groupRow.appendChild(groupCell);
+                    tbody.appendChild(groupRow);
+
+                    rows.forEach(function(row) {
+                    tbody.appendChild(row);
+                    });
+                }
+            });
+
+        altTextValues.forEach(function(altTextValue) {
+            if (!groupedAltTextValues.includes(altTextValue)) {
+                var rows = altTextGroup[altTextValue];
+
+                var groupRow = document.createElement('tr');
+                var groupCell = document.createElement('td');
+                groupCell.colSpan = 5;
+                groupCell.textContent = altTextValue;
+                groupRow.appendChild(groupCell);
+                tbody.appendChild(groupRow);
+
+                rows.forEach(function(row) {
+                    tbody.appendChild(row);
+                });
+            }
+        });
+    }
+
+        // Add event listeners to the filter headers
+        document.addEventListener('DOMContentLoaded', function() {
+            var headers = document.querySelectorAll('.filter-active');
+            headers.forEach(function(header) {
+                header.addEventListener('click', function() {
+                    var columnName = this.id;
+                    toggleFilter(columnName);
+                });
+            });
+
+            var altTextHeader = document.getElementById('alt_text_header');
+            altTextHeader.addEventListener('click', function() {
+                groupByAltText();
+         });
+        });
+    </script>   
+
+</head>
+<body>
+    <!-- Toggle dropdown and button -->
+    <div class="toggle-container">
+        <select id="table-select">
+            <option value="link">Link Text Information</option>
+            <option value="alt">Image Info Table</option>
+        </select>
+        <button onclick="toggleTable()">Change table view</button>
+    </div>
+    {% if table_type == 'link' %}
+
+<!-- Link table headers -->
+<h1>Link Text Information</h1>
+<table>
+    <tr>
+        <th>Web Address</th>
+        <th>Link Text Content</th>
+        <th>Pass/Fail Score</th>
+    </tr>
+    {% for link_info in link_info %}
+    <tr>
+        <td>{{ link_info['Web address'] }}</td>
+        <td>{{ link_info['Link text content'] }}</td>
+        <td>{{ link_info['Pass/fail score'] }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+
+<!-- Alt text table headers -->
+<h1>Image Info Table</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Web address</th>
+            <th>Thumbnail</th>
+            <th id="alt_text_header" data-sort="asc" class="filter-active">Presence of alt text<span class="filter-arrow asc"></span></th>
+            <th>Alt text content</th>
+            <th>Pass/fail score</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for image_info in image_info %}
+        <tr>
+            <td>{{ image_info['Web address'] }}</td>
+            <td><img src="{{ image_info['Thumbnail'] }}" class="thumbnail"></td>
+            <td class="alt-text-column">{{ image_info['Presence of alt text'] }}</td>
+            <td>{{ image_info['Alt text content'] }}</td>
+            <td>{{ image_info['Pass/fail score'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
