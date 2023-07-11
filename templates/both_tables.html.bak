@@ -65,8 +65,6 @@
     </style>
     
     <script>
-
-        /*
         // Function to update the displayed web address
         function updateWebAddress(websiteUrl) {
             var websiteUrlDisplay = document.getElementById('website-url-display');
@@ -97,8 +95,7 @@
                 updateWebAddress(websiteUrl);
             });
         });
-        */
-
+    
         // Function to change the filter arrow direction and update the form input
         function toggleFilter(columnName) {
             var columnElement = document.getElementById(columnName);
@@ -214,81 +211,61 @@
 
     <!-- Web address input, toggle dropdown, and search button -->
     <div class="toggle-container">
-        <form method="GET" action="/">
+        <form method="POST" action="/">
             <label for="website_url">Website URL:</label>
-            <input type="text" value="{{website_url}}" name="website_url" 
-                   placeholder="URL of site to check" size=30 
-                   id="website_url" pattern="http+s*://\S+" title="Must start with http:// or https://" required>
+            <input type="text" name="website_url" id="website_url" required>
             <span id="website-url-display"></span>
-            <select id="table-select" name="table_type">
-                {% if table_type == 'alt' %}
-                <option value="alt" selected>Image Info Table</option>
-                <option value="link">Link Text Table</option>
-                {% elif table_type == 'link' %}
-                <option value="alt">Image Info Table</option>
-                <option value="link" selected>Link Text Table</option>
-                {% else %}
-                <option value="None" selected>Select Table type</option>
+            <select id="table-select">
                 <option value="alt">Image Info Table</option>
                 <option value="link">Link Text Table</option>
-                {% endif %}
             </select>
-            <input type="submit" value="Show Table">
+            <button id="search-button">Search</button>
         </form>
-
-        <!-- Normally "" or an error message (Could be more elegant)-->
-        <br>{{msg}} 
     </div>
+    {% if table_type == 'link' %}
 
-    {% if msg == '' %} <!-- if we don't have an error message, display the appropriate table -->
+        <!-- Link table headers -->
+        <h1>Link Text Table</h1>
+        <table>
+            <tr>
+                <th>Web Address</th>
+                <th>Link text content</th>
+                <th>Pass/Fail Score</th>
+            </tr>
+            {% for link_info in link_info %}
+            <tr>
+                <td>{{ link_info['Web address'] }}</td>
+                <td>{{ link_info['Link text content'] }}</td>
+                <td>{{ link_info['Pass/fail score'] }}</td>
+            </tr>
+    {% endfor %}
+        </table>
+    {% else %}
 
-        {% if table_type == 'link' %}
-
-            <!-- Link table headers -->
-            <h1>Link Text Table</h1>
-            <table>
+        <!-- Alt text table headers -->
+        <h1>Image Info Table</h1>
+        <table>
+            <thead>
                 <tr>
-                    <th>Web Address</th>
-                    <th>Link text content</th>
-                    <th>Pass/Fail Score</th>
+                    <th>Web address</th>
+                    <th>Thumbnail</th>
+                    <th id="alt_text_header" data-sort="asc" class="filter-active">Presence of alt text<span class="filter-arrow asc"></span></th>
+                    <th>Alt text content</th>
+                    <th>Pass/fail score</th>
                 </tr>
-                {% for link_info in link_info %}
+            </thead>
+            <tbody>
+                {% for image_info in image_info %}
                 <tr>
-                    <td>{{ link_info['Web address'] }}</td>
-                    <td>{{ link_info['Link text content'] }}</td>
-                    <td>{{ link_info['Pass/fail score'] }}</td>
+                    <td>{{ image_info['Web address'] }}</td>
+                    <td><img src="{{ image_info['Thumbnail'] }}" class="thumbnail"></td>
+                    <td class="alt-text-column">{{ image_info['Presence of alt text'] }}</td>
+                    <td>{{ image_info['Alt text content'] }}</td>
+                    <td>{{ image_info['Pass/fail score'] }}</td>
                 </tr>
-            
-                {% endfor %}
-            </table>
-
-        {% elif table_type == 'alt' %}
-
-            <!-- Alt text table headers -->
-            <h1>Image Info Table</h1>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Web address</th>
-                        <th>Thumbnail</th>
-                        <th id="alt_text_header" data-sort="asc" class="filter-active">Presence of alt text<span class="filter-arrow asc"></span></th>
-                        <th>Alt text content</th>
-                        <th>Pass/fail score</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for image_info in image_info %}
-                    <tr>
-                        <td>{{ image_info['Web address'] }}</td>
-                        <td><img src="{{ image_info['Thumbnail'] }}" class="thumbnail"></td>
-                        <td class="alt-text-column">{{ image_info['Presence of alt text'] }}</td>
-                        <td>{{ image_info['Alt text content'] }}</td>
-                        <td>{{ image_info['Pass/fail score'] }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% endif %}
+    {% endfor %}
+            </tbody>
+        </table>
     {% endif %}
 </body>
 </html>
