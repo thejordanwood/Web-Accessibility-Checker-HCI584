@@ -10,7 +10,7 @@
             "request": "launch",
             "module": "flask",
             "env": {
-                "FLASK_APP": "Accessibility Checker Code/AltText_CH.py",
+                "FLASK_APP": "Accessibility Checker Code/AltText_LinkText.py",
                 "FLASK_DEBUG": "1"
             },
             "args": [
