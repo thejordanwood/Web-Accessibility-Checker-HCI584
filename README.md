@@ -9,7 +9,7 @@ The image score is determined by checking if the alternative text is between 4 t
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.10 or higher
 - Python packages:
     - Flask
     - requests
