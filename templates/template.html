@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accessibility Checker</title>
+    <style>
+        /* CSS styling */
+        body {
+            font-family: Arial, sans-serif;
+            padding-left: 20px; /* This padding was added to create space between the table and the edge of the browser window */
+            padding-right: 20px;
+        }
+        
+        .header-section { 
+            /* This includes the title, text, fields, and button above the table info */
+            background-color: #dfe1e2;
+            padding: 20px;
+            color: black;
+        }
+
+        .table-header-section { 
+            /* This includes the table title and export button */
+            background-color: white;
+            padding: 30px;
+            color: black;
+        }
+
+        table {
+            /* This is the styling for the table */
+            border-collapse: collapse;
+            background-color: white;
+        }
+        
+        th, td {
+            /* Additional styling for the table and headers */
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th span {
+            /* Additional styling for the filter arrow */
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        #website_url {
+            /* This is for the web address field */
+            /* This is modeled after the USWDS text input field */
+            display: block;
+            width: 100%;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #333;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 0;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            max-width: 400px;
+            margin-bottom: 15px
+        }
+
+        #website_url:focus {
+            border-color: #005ea2;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 94, 162, 0.25);
+        }
+
+        .select {
+            /* This is for the selection dropdown */
+            /* This is modeled after the USWDS select component */
+            width: 100%;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #333;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            border-radius: 0;
+            max-width: 320px;
+            height: 46px;
+        }
+
+        button {
+            /* This is for the View Data button */
+            /* This is modeled after the USWDS default button */
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: center;
+            text-decoration: none;
+            color: #fff;
+            background-color: #0071bc;
+            border: 2px solid #0071bc;
+            transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+
+        button:hover {
+            background-color: #004677;
+            border-color: #004677;
+            color: #fff;
+        }
+
+        button:active {
+            background-color: #003144;
+            border-color: #003144;
+            color: #fff;
+        }
+
+        .button-outline {
+            /* This is for the export buttons */
+            /* This is modeled after the USWDS outline button */
+            display: inline-block;
+            padding: 0.75rem 1.5rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            text-align: center;
+            text-decoration: none;
+            border: 2px solid #0071bc; 
+            color: #0071bc;
+            background-color: transparent;
+            transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+            cursor: pointer;
+            border-radius: 0.25rem;
+        }
+
+        .button-outline:hover {
+            background-color: transparent;
+            border-color: #004677;
+            color: #004677;
+        }
+
+        .button-outline:active {
+            background-color: transparent;
+            border-color: #003144;
+            color: #003144;
+        }
+
+        .filter-arrow {
+            /* This is for the arrow to the right of the Score column header */
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            right: 8px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 5px 5px 0 5px;
+            border-color: #999999 transparent transparent transparent;
+            z-index: 2;
+        }
+
+        th {
+            /* Additional styling for the filter arrow */
+            background-color: #f2f2f2;
+            position: relative;
+            cursor: pointer;
+            padding-right: 30px;
+            min-width: 60px; /* Set a minimum width to ensure space for the arrow */
+        }
+
+        .thumbnail {
+            width: 100px;
+            height: auto;
+        }
+    </style>
+
+<script>
+
+    // This function controls how the Score column is filtered using the arrow
+    function sortTable(column) {
+        var table = document.getElementsByTagName("table")[0];
+        var rows = Array.from(table.rows).slice(1);
+        var filterArrow = table.getElementsByTagName("th")[column].querySelector(".filter-arrow");
+
+        // Toggle ascending/descending sorting direction
+        var asc = filterArrow.classList.toggle("asc");
+        var desc = !asc;
+
+        rows.sort(function (a, b) {
+            var aValue = a.cells[column].textContent.trim().toLowerCase();
+            var bValue = b.cells[column].textContent.trim().toLowerCase();
+            if (asc) {
+                return aValue.localeCompare(bValue);
+            } else {
+                return bValue.localeCompare(aValue);
+            }
+        });
+
+        // Reorder the table rows
+        for (var i = 0; i < rows.length; i++) {
+            table.tBodies[0].appendChild(rows[i]);
+        }
+
+        // Remove filter-active class from other columns
+        var headerRow = table.rows[0];
+        var headers = headerRow.getElementsByTagName("th");
+        for (var j = 0; j < headers.length; j++) {
+            var header = headers[j];
+            if (j !== column) {
+                header.classList.remove("filter-active");
+                header.querySelector(".filter-arrow").classList.remove("asc", "desc");
+            }
+        }
+
+        // Add filter-active class to the current column
+        var currentHeader = headers[column];
+        currentHeader.classList.toggle("filter-active");
+    }
+
+</script>
+
+</head>
+<body>
+    <div class="header-section">
+    <h1>Accessibility Checker</h1>
+    <p>The most common web accessibility issues are missing or incorrect text for links and images. This tool evaluates text that is used for links and alternative text for images.</p> 
+    <p>Enter a web address and select which type of text data you would like to view.</p>
+
+    <!-- This shows the entire form: web address input, select dropdown, and search button -->
+        <form method="GET" action="/">
+
+            <!-- This is the web address input -->
+            <input type="text" value="{{ website_url or '' }}" name="website_url" 
+                   placeholder="Enter web address" size="30" 
+                   id="website_url" pattern="https?://.+"
+                   title="Start web address with http:// or https://" required>
+            <span id="website-url-display"></span>
+
+            <!-- This is the select dropdown -->
+            <select id="table-select" name="table_type" class="select">
+                <label for="table-select">Text data</label>
+                {% if table_type == 'alt' %}
+                <option value="alt" selected>Images</option>
+                <option value="link">Links</option>
+                {% elif table_type == 'link' %}
+                <option value="alt">Images</option>
+                <option value="link" selected>Links</option>
+                {% else %}
+                <option value="None" selected>Select data set to view</option>
+                <option value="alt">Images</option>
+                <option value="link">Links</option>
+                {% endif %}
+            </select>
+
+            <!-- This is the View data/search dropdown -->
+            <button type="submit" class="button button--default">View data</button>
+        </form>
+
+        <!-- Error message -->
+        <br>{{ msg }}
+    </div>
+
+    {% if msg == '' %} <!-- If no error message, display the appropriate table -->
+
+        {% if table_type == 'link' %}
+
+        <!-- Link table headers -->
+        <div class="table-header-section">
+            <h2>Link Table</h2>
+            <a href="/export?table_type=link&amp;website_url={{ website_url }}" class="button-outline">Export Link Table</a>
+        </div>
+        <table class="table">
+            <tr>
+                <th>Link destination</th>
+                <th>Link text content</th>
+                <th onclick="sortTable(2)">Score<span class="filter-arrow"></span></th>
+            </tr>
+            {% for link_info in link_info %}
+            <tr>
+                <td><a href="{{ link_info['Link destination'] }}">{{ link_info['Link destination'] }}</a></td>
+                <td>{{ link_info['Link text content'] }}</td>
+                <td>{{ link_info['Pass/fail score'] }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+           
+        {% elif table_type == 'alt' %}
+
+            <!-- Alt text table headers -->
+            <div class="table-header-section">
+                <h2>Image Table</h2>
+                <a href="/export?table_type=alt&amp;website_url={{ website_url }}" class="button-outline">Export Image Table</a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>Image address</th>
+                    <th>Thumbnail</th>
+                    <th>Alt text content</th>
+                    <th onclick="sortTable(3)">Score<span class="filter-arrow"></span></th>
+                </tr>
+                {% for image_info in image_info %}
+                <tr>
+                    <td><a href="{{ image_info['Web address'] }}">{{ image_info['Web address'] }}</a></td>
+                    <td><img src="{{ image_info['Thumbnail'] }}" class="thumbnail"></td>
+                    <td>{{ image_info['Alt Text Content'] }}</td>
+                    <td>{{ image_info['Pass/Fail Score'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        {% endif %}
+    {% endif %}
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
