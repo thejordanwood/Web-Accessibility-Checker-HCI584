@@ -1,26 +1,48 @@
 # Web Accessibility Checker (HCI584)
-This is a web accessibility tester that checks for alt text and link text.
+This tool evaluates text that is used for links and alternative text for images.
 
-## What is the purpose of this project?
+## Description
 
-The most common web accessibility issues are missing link text and missing alternative text for images. These are important to have on a website because people with visual impairments often use screen readers to understand a webpage. If there isn’t proper text on images or links, screen readers don’t have anything to read. This makes it hard to understand web pages that use informative images or link to relevant content. My project will work to solve these problems by creating a program that allows a user to see which links and images have missing text. 
+The most common web accessibility issues are missing or incorrect text for links and images. Without proper text on these, screen readers won't be able to appropriately relay webpage information. This tool displays all relevant data in a table and identifies what text should be refined. The table will show web addresses, image thumbnails, current link and image text, and a text pass/fail score.
 
-## What is the expected functionality?
+The image score is determined by checking if the alternative text is between 4 to 80 words and the text doesn't start with the phrases “image of'' or “picture of.” The link score is determined by checking if the text is betweem 4 to 30 words and doesn't start with the phrases “read more” or “click here.”
 
-The user will be able to enter a home page web address, then the program will analyze that and other pages beginning with the home address in order to show missing text across the site.
+## Requirements
 
-### Expected output for alt text
-- Show the web address the image can be found on.
-- Show a thumbnail of the image. 
-- Show whether or not it has alt text. 
-- If it has alt text, it should show what that alt text is. 
-- Give a pass/fail score to the alt text.
+- Python 3.7 or higher
+- Python packages:
+    - Flask
+    - requests
+    - bs4 (BeautifulSoup)
+ 
+ ## Installation
 
-### Expected output for link text
-- Show the web address the link can be found on.
-- Show if the link contains text or not.
-- If it has text, it should show what that text is. 
-- Give a pass/fail score to the text. 
+**for main.py:** Use pip to install the required third party packages (pip -r requirements.txt)
 
-The pass or fail score for these would be generated based on what the program deems to be bad alt text or link text. For example, alt text should contain more than 5 words and avoid starting with the phrases “image of” or “picture of.” Link text will fail if it’s unclear and doesn’t communicate enough information to the user about what they need to do. Phrases like “read more” and “click here” create a bad experience for all users–especially those that are using screen readers. Ideally, a link should be descriptive and say something like “Read more about our Python class.”
+**for template.html:** In the main project folder, keep html file within a secondary folder labeled *templates*. 
+
+ ## Usage
+
+1. From an IDE, run the main.py file. If you don’t have an IDE, open a terminal to the appropriate folder and type in python <.py file>. The application will start, and you should see a local URL (e.g., http://127.0.0.1:5000/) in the terminal.
+
+2. Access this tool by opening your web browser, then enter the local URL provided.
+
+![Entering a web address and selecting the type of data to view](https://github.com/thejordanwood/Web-Accessibility-Checker-HCI584/blob/main/search.gif)
+
+3. Enter a web address and select the type of data to view. The web address must start with http:// or https://. Select "Images" or "Links" from the dropdown menu to view the corresponding data.
+
+![Sorting the table by clicking on the *Score* header](https://github.com/thejordanwood/Web-Accessibility-Checker-HCI584/blob/main/sort.gif)
+
+4. View the results. After submitting the web address and data type, the application will display a table containing the relevant information. Sort the table by clicking on the *Score* header to order the pass/fail score in ascending or descending order
+
+5. Export data to CSV. To export the displayed table data to a CSV file, click on the "Export Image Table" or "Export Link Table" button.
+
+ ## Known Issues
+
+- The application might not handle certain web page structures or non-standard HTML formats effectively.
+- Some web pages may have security measures that prevent the scraper from accessing their content.
+
+ ## Acknowledgments
+ This project makes use of the Flask framework, BeautifulSoup, and other helpful Python packages.
+
 
