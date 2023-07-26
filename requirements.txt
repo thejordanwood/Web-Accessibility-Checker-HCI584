@@ -1,0 +1,5 @@
+# reqirements to run app
+
+Flask >= version 2.3
+requests >= version 2.3
+bs4 (BeautifulSoup) >= version 4.11
