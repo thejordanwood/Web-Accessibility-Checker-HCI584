@@ -30,11 +30,6 @@ The application currently includes the following functionality:
 
 ## Known Issues
 
-**Major Issues**
-- The application may break when scraping web pages with extensive dynamic content or requiring authentication.
-- The scraper may encounter errors when dealing with complex web page layouts or heavy JavaScript usage.
-  
-**Minor Issues**
 - The application might not handle certain web page structures or non-standard HTML formats effectively.
 - Some web pages may have security measures that prevent the scraper from accessing their content.
 
