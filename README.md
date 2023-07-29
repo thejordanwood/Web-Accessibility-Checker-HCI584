@@ -27,7 +27,7 @@ The image score is determined by checking if the alternative text is between 4 t
 
 2. Access this application by opening your web browser, then enter the local URL provided.
 
-![Entering a web address and selecting the type of data to view](https://github.com/thejordanwood/Web-Accessibility-Checker-HCI584/blob/main/docs/search.gif))
+![Entering a web address and selecting the type of data to view](https://github.com/thejordanwood/Web-Accessibility-Checker-HCI584/blob/main/docs/search.gif)
 
 3. Enter a web address and select the type of data to view. The web address must start with http:// or https://. Select "Images" or "Links" from the dropdown menu to view the corresponding data.
 
