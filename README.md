@@ -5,7 +5,7 @@ This application evaluates text that is used for links and alternative text for 
 
 The most common web accessibility issues are missing or incorrect text for links and images. Without proper text on these, screen readers won't be able to appropriately relay webpage information. This application allows users to enter a web address and select the type of data (images or links) they want to evaluate. Data is then displayed in a table that shows web address, thumbnail (for images), text content, and pass/fail score.
 
-The image score is determined by checking if the alternative text is between 4 to 80 words and the text doesn't start with the phrases “image of'' or “picture of.” The link score is determined by checking if the text is betweem 4 to 30 words and doesn't start with the phrases “read more” or “click here.”
+The image score is determined by checking if the alternative text is between 4 to 80 words and the text doesn't start with the phrases “image of'' or “picture of.” The link score is determined by checking if the text is between 4 to 30 words and doesn't start with the phrases “read more” or “click here.”
 
 ## Requirements
 
