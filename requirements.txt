@@ -1,5 +1,5 @@
-# reqirements to run app
+# requirements to run app
 
 Flask >= version 2.3
 requests >= version 2.3
-bs4 (BeautifulSoup) >= version 4.11
+bs4 >= version 4.11

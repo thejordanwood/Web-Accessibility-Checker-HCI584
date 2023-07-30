@@ -14,16 +14,14 @@ The image score is determined by checking if the alternative text is between 4 t
     - Flask
     - requests
     - bs4 (BeautifulSoup)
- 
- ## Installation
 
-**for main.py:** Use pip to install the required third party packages (pip -r requirements.txt)
+## Installation
+- Use pip to install the required third party packages: `pip -r requirements.txt`
 
-**for template.html:** In the main project folder, keep html file within a secondary folder labeled *templates*. 
 
- ## Usage
+## Usage
 
-1. From an IDE, run the main.py file. If you don’t have an IDE, open a terminal to the appropriate folder and type in python <.py file>. The application will start, and you should see a local URL (e.g., http://127.0.0.1:5000/) in the terminal.
+1. From an IDE, run the `main.py` file. If you don’t have an IDE, open a terminal to the appropriate folder and type in `python main.py`. The application will start, and you should see a local URL (e.g., http://127.0.0.1:5000/) in the terminal.
 
 2. Access this application by opening your web browser, then enter the local URL provided.
 
